@@ -15,7 +15,7 @@ function Counter() {
 
   return (
     <>
-      <h1>Vite + React + Marcus</h1>
+      <h1>Counter</h1>
       <div className="card">
         <h2>count is {count}</h2>
 
