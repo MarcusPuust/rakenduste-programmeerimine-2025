@@ -3,7 +3,7 @@ import "../App.css"
 import "./Counter.css" // uus css fail
 
 function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0) //usestate ja 0 vahel määrata tüüp <number> või <string> vms
 
   function increaseCounter(amount: number) {
     setCount(count => count + amount)
