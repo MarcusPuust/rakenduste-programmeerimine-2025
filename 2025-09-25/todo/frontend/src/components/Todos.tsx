@@ -61,7 +61,7 @@ const Todos = () => {
     if (!title) return;
     try {
       const r = await fetch(`${api}/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title }),
       });
@@ -99,7 +99,6 @@ const Todos = () => {
           </Typography>
         </Box>
 
-        {/* vorm kohe pealkirja all */}
         <SubmitTodo
           fetchTodos={fetchTodos}
           onSuccess={() =>
