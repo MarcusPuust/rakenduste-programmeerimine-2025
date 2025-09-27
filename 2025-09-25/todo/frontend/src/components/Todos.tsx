@@ -9,8 +9,10 @@ import {
   Alert,
   Checkbox,
   IconButton,
+  Paper,
+  Divider,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import SubmitTodo from "./SubmitTodo";
 
@@ -86,61 +88,80 @@ const Todos = () => {
   };
 
   return (
-    <Box sx={{ textAlign: "center" }}>
-      <Typography variant="h3" gutterBottom>
-        Todos
-      </Typography>
+    <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+      <Stack spacing={2}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            Todos
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Lisa, märgi tehtuks või muuda todo-d.
+          </Typography>
+        </Box>
 
-      <SubmitTodo
-        fetchTodos={fetchTodos}
-        onSuccess={() =>
-          setSnack({ open: true, msg: "Todo added", severity: "success" })
-        }
-        onError={() =>
-          setSnack({ open: true, msg: "Add failed", severity: "error" })
-        }
-      />
+        {/* vorm kohe pealkirja all */}
+        <SubmitTodo
+          fetchTodos={fetchTodos}
+          onSuccess={() =>
+            setSnack({ open: true, msg: "Todo added", severity: "success" })
+          }
+          onError={() =>
+            setSnack({ open: true, msg: "Add failed", severity: "error" })
+          }
+        />
 
-      <List sx={{ width: "100%", maxWidth: 480, mx: "auto" }}>
-        {todos.map((t) => (
-          <ListItem key={t.id} divider>
-            <Stack
-              direction="row"
-              spacing={2}
-              alignItems="center"
-              sx={{ width: "100%" }}
+        <Divider />
+
+        <List sx={{ width: "100%" }}>
+          {todos.map((t) => (
+            <ListItem key={t.id} divider sx={{ px: 0 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                sx={{ width: "100%" }}
+              >
+                <Checkbox
+                  checked={t.done}
+                  onChange={() => toggleDone(t)}
+                  inputProps={{ "aria-label": "toggle done" }}
+                />
+                <Typography
+                  sx={{ flex: 1 }}
+                  style={{ textDecoration: t.done ? "line-through" : "none" }}
+                >
+                  {t.title}
+                </Typography>
+
+                <IconButton
+                  aria-label="edit"
+                  color="primary"
+                  onClick={() => updateTitle(t.id, t.title)}
+                >
+                  <EditIcon />
+                </IconButton>
+
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => softDelete(t.id)}
+                >
+                  Delete
+                </Button>
+              </Stack>
+            </ListItem>
+          ))}
+          {todos.length === 0 && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: "center", py: 2 }}
             >
-              <Checkbox
-                checked={t.done}
-                onChange={() => toggleDone(t)}
-                inputProps={{ "aria-label": "toggle done" }}
-              />
-              <Typography
-                sx={{ flex: 1, textAlign: "left" }}
-                style={{ textDecoration: t.done ? "line-through" : "none" }}
-              >
-                {t.title}
-              </Typography>
-
-              <IconButton
-                aria-label="edit"
-                color="primary"
-                onClick={() => updateTitle(t.id, t.title)}
-              >
-                <EditIcon />
-              </IconButton>
-
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => softDelete(t.id)}
-              >
-                Delete
-              </Button>
-            </Stack>
-          </ListItem>
-        ))}
-      </List>
+              Hetkel pole ühtegi todo’d.
+            </Typography>
+          )}
+        </List>
+      </Stack>
 
       <Snackbar
         open={snack.open}
@@ -156,7 +177,7 @@ const Todos = () => {
           {snack.msg}
         </Alert>
       </Snackbar>
-    </Box>
+    </Paper>
   );
 };
 

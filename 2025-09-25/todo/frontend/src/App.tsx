@@ -7,12 +7,13 @@ export default function App() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        p: 2,
+        py: 6,
+        px: 2,
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: 480, textAlign: "center" }}>
+      <Box sx={{ width: "100%", maxWidth: 560 }}>
         <Todos />
       </Box>
     </Box>

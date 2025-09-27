@@ -1,29 +1,34 @@
-import { Box, Button, Stack, TextField } from "@mui/material";
-import React, { useState } from "react";
+import { Stack, TextField, Button } from "@mui/material";
+import { useState } from "react";
 
-type SubmitTodoProps = {
-  fetchTodos: () => void;
+const API = "http://localhost:3000/todos";
+
+const SubmitTodo = ({
+  fetchTodos,
+  onSuccess,
+  onError,
+}: {
+  fetchTodos: () => Promise<void>;
   onSuccess?: () => void;
   onError?: () => void;
-};
-
-const SubmitTodo = ({ fetchTodos, onSuccess, onError }: SubmitTodoProps) => {
+}) => {
   const [title, setTitle] = useState("");
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const submit = async () => {
+    const value = title.trim();
+    if (!value) return;
     try {
-      const r = await fetch("http://localhost:3000/todos", {
+      const r = await fetch(API, {
         method: "POST",
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title: value }),
       });
       if (!r.ok) throw new Error();
       setTitle("");
-      fetchTodos();
+      await fetchTodos();
       onSuccess?.();
     } catch {
       onError?.();
@@ -31,21 +36,22 @@ const SubmitTodo = ({ fetchTodos, onSuccess, onError }: SubmitTodoProps) => {
   };
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <form onSubmit={handleSubmit}>
-        <Stack direction="row" spacing={2}>
-          <TextField
-            label="Todo title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <Button variant="contained" color="success" type="submit">
-            Add
-          </Button>
-        </Stack>
-      </form>
-    </Box>
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={1.5}
+      sx={{ width: "100%" }} // <-- täislaius
+    >
+      <TextField
+        fullWidth
+        label="New todo"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && submit()}
+      />
+      <Button variant="contained" onClick={submit} sx={{ minWidth: 120 }}>
+        Add
+      </Button>
+    </Stack>
   );
 };
 
