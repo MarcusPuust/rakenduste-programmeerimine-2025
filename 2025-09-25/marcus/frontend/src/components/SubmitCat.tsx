@@ -3,50 +3,42 @@ import React, { useState } from "react";
 
 type SubmitCatProps = {
   fetchCats: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 };
 
-const SubmitCat = ({ fetchCats }: SubmitCatProps) => {
+const SubmitCat = ({ fetchCats, onSuccess, onError }: SubmitCatProps) => {
   const [name, setName] = useState("");
 
-  const submitCat = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/cats", {
+      const r = await fetch("http://localhost:3000/cats", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: name }),
+        body: JSON.stringify({ name }),
       });
-
-      if (response.ok) {
-        console.log("Success", response);
-        // Snackbar success
-      } else {
-        console.warn("No success");
-        // Snackbar
-      }
-    } catch (error) {
-      console.warn(error);
+      if (!r.ok) throw new Error();
+      setName("");
+      fetchCats();
+      onSuccess?.();
+    } catch {
+      onError?.();
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    submitCat();
-    setTimeout(fetchCats, 100);
-  };
-
   return (
-    <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+    <Box sx={{ mb: 2 }}>
       <form onSubmit={handleSubmit}>
-        <Stack>
+        <Stack direction="row" spacing={2}>
           <TextField
             label="Cat name"
-            onChange={(event) => setName(event.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
           <Button variant="contained" color="success" type="submit">
             Add
