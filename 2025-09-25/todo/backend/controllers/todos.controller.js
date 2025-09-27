@@ -73,3 +73,18 @@ exports.delete = (req, res) => {
   todo.updatedAt = Date.now();
   res.json({ message: "Deleted (soft)", id: todo.id });
 };
+
+// ADMIN: loe kõik (ka deleted:true)
+exports.adminReadAll = (req, res) => {
+  // NB! siin EI filtreeri deleted välja
+  res.json(todos);
+};
+
+// ADMIN: toggle deleted <-> !deleted
+exports.toggleDeleted = (req, res) => {
+  const todo = todos.find(t => t.id === req.params.id);
+  if (!todo) return res.status(404).json({ message: "Not found" });
+  todo.deleted = !todo.deleted;
+  todo.updatedAt = Date.now();
+  res.json({ message: "Toggled deleted", id: todo.id, deleted: todo.deleted });
+};
